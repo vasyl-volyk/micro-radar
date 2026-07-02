@@ -140,13 +140,16 @@ std::pair<int, int> AircraftManager::ProjectCoordinateToScreen(float predLat, fl
 
 void AircraftManager::DrawAircraftInfo(LGFX_Sprite& backbuffer, int x, int y, const TrackedAircraft& tracked) const
 {
+    constexpr float MS_TO_KNOTS = 1.94384f;
+    constexpr float METERS_TO_FEET = 3.28084f;
+
     const int lineHeight = tft.fontHeight() + 1;
 
     backbuffer.setTextSize(1);
     backbuffer.setTextColor(lgfx::color888(0, 128, 0));
     backbuffer.drawString(tracked.state.callsign, x + 5, y + 5);
-    backbuffer.drawString(String(tracked.state.velocity) + "m/s", x + 5, y + 5 + lineHeight);
-    backbuffer.drawString(String(tracked.state.baroAltitude) + "m", x + 5, y + 5 + lineHeight * 2);
+    backbuffer.drawString(String(static_cast<int>(tracked.state.velocity * MS_TO_KNOTS)) + "kt", x + 5, y + 5 + lineHeight);
+    backbuffer.drawString(String(static_cast<int>(tracked.state.baroAltitude * METERS_TO_FEET)) + "ft", x + 5, y + 5 + lineHeight * 2);
 }
 
 void AircraftManager::DrawAircraftTriangle(LGFX_Sprite& backbuffer, int x, int y, const TrackedAircraft& tracked) const
