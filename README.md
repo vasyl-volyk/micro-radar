@@ -14,7 +14,7 @@
     <td align="center" width="50%">
       <img src="https://github.com/user-attachments/assets/c48f9ba2-4ebf-443f-96c5-f821910b4f81" alt="radar" width="100%"/>
       <br/>
-      <sub>My version <br> Information about the aircraft is disabled here.</sub>
+      <sub>My version: Information about the aircraft is disabled here.</sub>
     </td>
   </tr>
 </table>
