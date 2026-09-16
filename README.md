@@ -4,7 +4,20 @@
 <h6 align=center>
   a tiny open-source flight radar for your desk
 </h6>
-<table align="center"> <tr> <td align="center"> <img src="https://github.com/user-attachments/assets/2ccb2063-d15c-4180-8e3c-ae3a81c814ff" alt="Anthony's original" width="400"/> <br/> <sub>Original — Anthony</sub> </td> <td align="center"> <img width="400" height="225" alt="radar" src="https://github.com/user-attachments/assets/c48f9ba2-4ebf-443f-96c5-f821910b4f81" /> <br/> <sub>My version</sub> </td> </tr> </table>
+<table align="center" width="100%">
+  <tr>
+    <td align="center" width="50%">
+      <img src="https://github.com/user-attachments/assets/2ccb2063-d15c-4180-8e3c-ae3a81c814ff" alt="Anthony's original" width="100%"/>
+      <br/>
+      <sub>Original — Anthony</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="https://github.com/user-attachments/assets/c48f9ba2-4ebf-443f-96c5-f821910b4f81" alt="radar" width="100%"/>
+      <br/>
+      <sub>My version</sub>
+    </td>
+  </tr>
+</table>
 <p align=center>
   <a href="#prerequisites">PREREQUISITES</a> - <a href="#assembly">ASSEMBLY</a> - <a href="#usage">USAGE</a> - <a href="#faq">FAQ</a>
 </p>
