@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../publish-repo"
+		},
+		{
+			"name": "micro-radar",
+			"path": "."
+		}
+	],
+	"settings": {}
+}

@@ -93,7 +93,7 @@ void AircraftManager::Update()
     }
 }
 
-void AircraftManager::Draw(LGFX_Sprite& backbuffer)
+void AircraftManager::Draw(LGFX_Sprite& backbuffer, bool sweepEnabled, float sweepAngle)
 {
     DrawRadarCircles(backbuffer);
 
@@ -104,14 +104,38 @@ void AircraftManager::Draw(LGFX_Sprite& backbuffer)
         auto [predLat, predLon] = tracked.GetDisplayPosition();
         auto [x, y] = ProjectCoordinateToScreen(predLat, predLon);
 
+        // full brightness when the sweep is off; otherwise fresh where the beam just passed, dim just before it returns
+        const float brightness = sweepEnabled ? GetSweepFade(x, y, sweepAngle) : 1.0f;
+
         if (displayInfoText)
-            DrawAircraftInfo(backbuffer, x, y, tracked);
+            DrawAircraftInfo(backbuffer, x, y, tracked, brightness);
 
         if (displayTriangles)
-            DrawAircraftTriangle(backbuffer, x, y, tracked);
+            DrawAircraftTriangle(backbuffer, x, y, tracked, brightness);
         else
-            backbuffer.fillCircle(x, y, 3, lgfx::color888(0, 255, 0));
+            backbuffer.fillCircle(x, y, 3, lgfx::color888(0, (uint8_t)(255 * brightness), 0));
     }
+}
+
+float AircraftManager::GetSweepFade(int x, int y, float sweepAngle) const
+{
+    constexpr float FULL_TURN = 2.0f * PI; // Arduino.h already #defines TWO_PI, so name this separately
+    constexpr float MIN_BRIGHTNESS = 0.12f; // dims almost to nothing right before the sweep returns, but never fully vanishes
+    constexpr int CENTRE = SCREEN_SIZE_DIV_2 - 1;
+
+    auto normalizeAngle = [](float angle) {
+        angle = std::fmod(angle, FULL_TURN);
+        if (angle < 0.0f) angle += FULL_TURN;
+        return angle;
+        };
+
+    const float targetAngle = normalizeAngle(std::atan2((float)(y - CENTRE), (float)(x - CENTRE)));
+    const float angleSinceSwept = normalizeAngle(normalizeAngle(sweepAngle) - targetAngle);
+
+    // 1.0 the instant the beam passes over the target, fading linearly to MIN_BRIGHTNESS just before it comes back around
+    const float freshness = 1.0f - (angleSinceSwept / FULL_TURN);
+
+    return MIN_BRIGHTNESS + freshness * (1.0f - MIN_BRIGHTNESS);
 }
 
 void AircraftManager::DrawRadarCircles(LGFX_Sprite& backbuffer) const
@@ -138,18 +162,18 @@ std::pair<int, int> AircraftManager::ProjectCoordinateToScreen(float predLat, fl
     return { x, y };
 }
 
-void AircraftManager::DrawAircraftInfo(LGFX_Sprite& backbuffer, int x, int y, const TrackedAircraft& tracked) const
+void AircraftManager::DrawAircraftInfo(LGFX_Sprite& backbuffer, int x, int y, const TrackedAircraft& tracked, float brightness) const
 {
     const int lineHeight = tft.fontHeight() + 1;
 
     backbuffer.setTextSize(1);
-    backbuffer.setTextColor(lgfx::color888(0, 128, 0));
+    backbuffer.setTextColor(lgfx::color888(0, (uint8_t)(128 * brightness), 0));
     backbuffer.drawString(tracked.state.callsign, x + 5, y + 5);
     backbuffer.drawString(String(tracked.state.velocity) + "m/s", x + 5, y + 5 + lineHeight);
     backbuffer.drawString(String(tracked.state.baroAltitude) + "m", x + 5, y + 5 + lineHeight * 2);
 }
 
-void AircraftManager::DrawAircraftTriangle(LGFX_Sprite& backbuffer, int x, int y, const TrackedAircraft& tracked) const
+void AircraftManager::DrawAircraftTriangle(LGFX_Sprite& backbuffer, int x, int y, const TrackedAircraft& tracked, float brightness) const
 {
     const float dx = std::sin(radians(tracked.state.trueTrack));
     const float dy = -std::cos(radians(tracked.state.trueTrack));
@@ -166,5 +190,5 @@ void AircraftManager::DrawAircraftTriangle(LGFX_Sprite& backbuffer, int x, int y
     const float rightX = x - dx * TRIANGLE_LENGTH * 0.5f - px * TRIANGLE_WIDTH * 0.5f;
     const float rightY = y - dy * TRIANGLE_LENGTH * 0.5f - py * TRIANGLE_WIDTH * 0.5f;
 
-    backbuffer.fillTriangle(tipX, tipY, leftX, leftY, rightX, rightY, lgfx::color888(0, 255, 0));
+    backbuffer.fillTriangle(tipX, tipY, leftX, leftY, rightX, rightY, lgfx::color888(0, (uint8_t)(255 * brightness), 0));
 }

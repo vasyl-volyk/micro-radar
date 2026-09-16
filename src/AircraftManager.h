@@ -28,8 +28,9 @@ private:
 
     void DrawRadarCircles(LGFX_Sprite& backbuffer) const;
     std::pair<int, int> ProjectCoordinateToScreen(float predLat, float predLon) const;
-    void DrawAircraftInfo(LGFX_Sprite& backbuffer, int x, int y, const TrackedAircraft& tracked) const;
-    void DrawAircraftTriangle(LGFX_Sprite& backbuffer, int x, int y, const TrackedAircraft& tracked) const;
+    void DrawAircraftInfo(LGFX_Sprite& backbuffer, int x, int y, const TrackedAircraft& tracked, float brightness) const;
+    void DrawAircraftTriangle(LGFX_Sprite& backbuffer, int x, int y, const TrackedAircraft& tracked, float brightness) const;
+    float GetSweepFade(int x, int y, float sweepAngle) const;
 
 public:
     AircraftManager(ConfigurationWebServer& config, OpenSkyAuthTokenHandler& auth, HttpRequestManager& httpManager, LGFX& tftGfx)
@@ -40,5 +41,5 @@ public:
 
     void Initialise();
     void Update();
-    void Draw(LGFX_Sprite& backbuffer);
+    void Draw(LGFX_Sprite& backbuffer, bool sweepEnabled, float sweepAngle);
 };

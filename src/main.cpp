@@ -72,17 +72,20 @@ void loop()
   backbuffer.fillScreen(lgfx::color888(0, 0, 0));
 
   String renderScanlines = configServer.GetStoredString("scanline");
-  if (renderScanlines.isEmpty() || renderScanlines == "true") {
-    DrawScanLines(backbuffer,
+  const bool sweepEnabled = renderScanlines.isEmpty() || renderScanlines == "true";
+  const float sweepAngle = millis() / 3000.0f; // radians, monotonically increasing - one full sweep every ~18.8s
+
+  if (sweepEnabled) {
+    DrawScanLine(backbuffer,
       SCREEN_SIZE_DIV_2 - 1,
       SCREEN_SIZE_DIV_2 - 1,
-      SCREEN_SIZE_DIV_2 - 1 + (std::cos(millis() / 3000.0f) * SCREEN_SIZE_DIV_2),
-      SCREEN_SIZE_DIV_2 - 1 + (std::sin(millis() / 3000.0f) * SCREEN_SIZE_DIV_2),
-      20, 128, 5
+      SCREEN_SIZE_DIV_2 - 1 + (std::cos(sweepAngle) * SCREEN_SIZE_DIV_2),
+      SCREEN_SIZE_DIV_2 - 1 + (std::sin(sweepAngle) * SCREEN_SIZE_DIV_2)
     );
   }
 
-  aircraftManager.Draw(backbuffer);
+  // when the sweep is on, targets glow brightest as the beam passes them and fade until it comes back around
+  aircraftManager.Draw(backbuffer, sweepEnabled, sweepAngle);
   backbuffer.pushSprite(0, 0);
 }
 
