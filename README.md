@@ -6,6 +6,7 @@
 </h6>
 <p align=center>
   <img src="https://github.com/user-attachments/assets/2ccb2063-d15c-4180-8e3c-ae3a81c814ff" alt="drawing" width="400"/>
+  <img width="400" height="225" alt="radar" src="https://github.com/user-attachments/assets/c48f9ba2-4ebf-443f-96c5-f821910b4f81" />
 </p>
 <p align=center>
   <a href="#prerequisites">PREREQUISITES</a> - <a href="#assembly">ASSEMBLY</a> - <a href="#usage">USAGE</a> - <a href="#faq">FAQ</a>
